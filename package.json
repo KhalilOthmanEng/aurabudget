@@ -1,0 +1,93 @@
+{
+  "name": "aurabudget-desktop",
+  "version": "1.0.0",
+  "description": "AuraBudget — AI-Powered Personal Finance Tracker",
+  "author": "AuraBudget",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:electron\"",
+    "dev:backend": "cd backend && python -m uvicorn app.main:app --port 48732 --reload",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:electron": "wait-on http://localhost:5173 && electron .",
+
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "python scripts/build_backend.py",
+    "build:prepare": "npm run build:frontend && node scripts/copy_frontend.js",
+    "build:all": "npm run build:prepare && npm run build:backend",
+
+    "dist:win": "npm run build:prepare && electron-builder --win",
+    "dist:mac": "npm run build:prepare && electron-builder --mac",
+    "dist:linux": "npm run build:prepare && electron-builder --linux",
+
+    "postinstall": "cd frontend && npm install"
+  },
+  "dependencies": {
+    "electron-is-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.aurabudget.desktop",
+    "productName": "AuraBudget",
+    "copyright": "Copyright © 2026 AuraBudget",
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "!node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist/aurabudget-server",
+        "to": "backend/aurabudget-server"
+      },
+      {
+        "from": "backend/frontend_dist",
+        "to": "backend/frontend_dist"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "AuraBudget-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AuraBudget",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.finance",
+      "artifactName": "AuraBudget-${version}.${ext}"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "build/icon.png",
+      "category": "Office",
+      "artifactName": "AuraBudget-${version}.${ext}"
+    }
+  }
+}
