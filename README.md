@@ -4,19 +4,6 @@
 
 No terminal. No Python setup. No `.env` files. Just double-click and go.
 
----
-
-## What Changed from the Web Version
-
-| Feature | Web Version | Desktop Version |
-|---|---|---|
-| Setup | Terminal + Python + npm + `.env` | One-click installer |
-| Configuration | Edit `.env` file | GUI Settings page |
-| Database | Project folder | `%APPDATA%/AuraBudget/` (persistent) |
-| Backend | Manual `uvicorn` start | Auto-starts with the app |
-| Data backup | Manual file copy | Export/Import buttons in Settings |
-| System tray | ❌ | ✅ Minimize to tray |
-| Updates | `git pull` | (ready for auto-update) |
 
 ## Architecture
 
